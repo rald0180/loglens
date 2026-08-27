@@ -69,6 +69,20 @@ Exit codes: `0` clean, `1` findings present, `2` bad usage, `3` io error. The
 non zero exit on findings is deliberate, so the tool can gate a cron job or a
 pipeline step without anything having to parse its output.
 
+## Running it with Docker
+
+No local Java or Maven needed, only Docker.
+
+```bash
+docker build -t loglens .
+docker run --rm -v "$PWD/sample:/data" loglens /data/access.log
+```
+
+The build is multi-stage: Maven and the full JDK build the jar, then only the jar is
+copied into a JRE-only image, so the shipped image carries no build tools and no source.
+The container runs as an unprivileged user. Mount the directory holding your log file to
+`/data` and pass the container path as the argument.
+
 ## Input format
 
 Common Log Format and Combined Log Format, with an optional trailing request
